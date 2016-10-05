@@ -6,14 +6,12 @@ public class ClusteringInputPoint {
 		String inputDirectory=args[0];
 		ClusteringDirectoryRunner directoryRunner = new ClusteringDirectoryRunner();
 		String clusteringDirectory = "features";
-		boolean integrateClusterings=false, estimateBestK=false;
+		boolean integrateClusterings=false;
+		int estimateBestK=0;
 		if(args.length>1){
 			integrateClusterings = Boolean.parseBoolean(args[1]);
 			if(args.length>2){
-				estimateBestK = Boolean.parseBoolean(args[2]);
-				if(args.length>3){
-					clusteringDirectory=args[3];
-				}
+				estimateBestK = Integer.max(Integer.parseInt(args[2]),0);
 			}
 		}
 		directoryRunner.setUpDirectoryClustering(clusteringDirectory);

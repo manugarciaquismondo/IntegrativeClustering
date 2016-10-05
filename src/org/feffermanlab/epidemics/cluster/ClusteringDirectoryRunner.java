@@ -17,7 +17,8 @@ public class ClusteringDirectoryRunner {
 	private MatrixAuxiliaryClass matrixAverager;
 	private MatrixCSVIO matrixIO;
 	private ClusterIntegrator clusterIntegrator;
-	private boolean integrateClusters, estimateBestK;
+	private boolean integrateClusters;
+	private int estimateBestK;
 	private List<Integer> bestKValues;
 	private String featureDirectoryName;
 	
@@ -54,19 +55,18 @@ public class ClusteringDirectoryRunner {
 	private void applyClusteringAndWriteIncidenceMatrices(String geneDirectoryRoute) throws Exception {
 		int numberOfIntegratedClusters=0;
 //		final int PRESET_INTEGRATED_CLUSTERS=7;
-		final int PRESET_INTEGRATED_CLUSTERS=4;
 		//Apply the clustering algorithm on each feature separately and intersect the resulting clusterings.
 		clusterApplier.applyClusteringAndProcessExceptions(geneDirectoryRoute, "probabilitymatrix.csv");
 		clusterIntersector.intersectClusters(clusterApplier.getBestClusterings());
 		if(integrateClusters){
 			// If estimate the best K is set to true, estimate the best K for clustering. Otherwise, use the preset value
-			if(estimateBestK){
+			if(estimateBestK<=0){
 				KEstimator estimator = new LocaleKEstimator();
 				//KEstimator estimator = new JSATKEstimator();
 				numberOfIntegratedClusters=estimator.estimateBestK(geneDirectoryRoute);
 				bestKValues.add(numberOfIntegratedClusters);
 			} else{
-				numberOfIntegratedClusters=PRESET_INTEGRATED_CLUSTERS;
+				numberOfIntegratedClusters=estimateBestK;
 			}
 			// Integrate clusters and build and write the incidence matrix
 			this.clusterIntegrator=new ClusterIntegrator(clusterApplier.getInstancesMapping(), clusterIntersector.getClusters(), clusterApplier.getAllAttributeNames());
@@ -200,9 +200,9 @@ public class ClusteringDirectoryRunner {
 	/**
 	 * Set clustering integration and estimation of best K value
 	 * @param integrateClusterings True if clusterings are integrated across features
-	 * @param estimateBestK True if the best K value is set
+	 * @param estimateBestK K value to set. If lower or equal to 0, then it is estimated
 	 */
-	public void setIntegrateClusteringsAndEstimateBestK(boolean integrateClusterings, boolean estimateBestK){
+	public void setIntegrateClusteringsAndEstimateBestK(boolean integrateClusterings, int estimateBestK){
 		this.integrateClusters=integrateClusterings;
 		this.estimateBestK=estimateBestK;
 	}

@@ -39,6 +39,7 @@ public class TestClusteringIntegrationFromObservations {
 	private FileFilter directoryFilter;
 	private ClusterReader clusterReader;
 	private ClusteringDirectoryRunner directoryRunner;
+	private final int PRESET_CLUSTERS=4;
 	
 	@Before
 	public void setUp() throws Exception {
@@ -173,17 +174,17 @@ public class TestClusteringIntegrationFromObservations {
 	
 	@Test
 	public void testGlassIterationsNonIntegrative() throws Exception{
-		setIntegrateClusteringsAndEstimateBestK(false, false);
+		setIntegrateClusteringsAndEstimateBestK(false, PRESET_CLUSTERS);
 		testGlassIterations();
 	}
 
 	@Test
 	public void testGlassIterationsIntegrative() throws Exception{
-		setIntegrateClusteringsAndEstimateBestK(true, false);
+		setIntegrateClusteringsAndEstimateBestK(true, PRESET_CLUSTERS);
 		testGlassIterations();
 	}
 
-	private void setIntegrateClusteringsAndEstimateBestK(boolean integrateClusterings, boolean estimateBestK){
+	private void setIntegrateClusteringsAndEstimateBestK(boolean integrateClusterings, int estimateBestK){
 		directoryRunner.setIntegrateClusteringsAndEstimateBestK(integrateClusterings, estimateBestK);
 	}
 
@@ -206,7 +207,7 @@ public class TestClusteringIntegrationFromObservations {
 	
 	@Test
 	public void testEstimateBestK() throws Exception{
-		setIntegrateClusteringsAndEstimateBestK(true, true);
+		setIntegrateClusteringsAndEstimateBestK(true, 0);
 		testGlassIterations();
 		System.out.println("Test finished");
 
@@ -214,7 +215,7 @@ public class TestClusteringIntegrationFromObservations {
 	
 	@Test
 	public void runEpidemiologyIntegration() throws Exception{
-		runDirectoryEpidemiologyIntegration("./epidemic_dataset", true, "clusteringknotset");
+		runDirectoryEpidemiologyIntegration("./epidemic_dataset", 0, "clusteringknotset");
 	}
 
 
@@ -225,13 +226,13 @@ public class TestClusteringIntegrationFromObservations {
 		File[] epidemiolgyFiles=epidemiolgyCombinationsDirectory.listFiles(directoryFilter);
 		for(File directory : epidemiolgyFiles){
 			String directoryName=directory.getName();
-			runDirectoryEpidemiologyIntegration(epidemiolgyCombinationsRoute+"/"+directoryName, true, "clusteringknotset");
-			runDirectoryEpidemiologyIntegration(epidemiolgyCombinationsRoute+"/"+directoryName, false, "clusteringkset");
+			runDirectoryEpidemiologyIntegration(epidemiolgyCombinationsRoute+"/"+directoryName, 0, "clusteringknotset");
+			runDirectoryEpidemiologyIntegration(epidemiolgyCombinationsRoute+"/"+directoryName, PRESET_CLUSTERS, "clusteringkset");
 			System.out.println("clustering on directory "+directoryName);
 		}
 	}
 	
-	private void runDirectoryEpidemiologyIntegration(String baseDirectory, boolean estimateBestK, String clusteringFilename) throws Exception, IOException {
+	private void runDirectoryEpidemiologyIntegration(String baseDirectory, int estimateBestK, String clusteringFilename) throws Exception, IOException {
 		setIntegrateClusteringsAndEstimateBestK(true, estimateBestK);
 		
 		applyClusteringOnDirectory(baseDirectory+"/relevantgenes");
