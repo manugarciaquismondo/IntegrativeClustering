@@ -2,6 +2,7 @@
 An algorithm for integrative clustering across different types of data.
 
 Integrative Clustering is an algorithm for data integration of partial clusterings. The algorithm works as follows:
+
 1. The data is first clustered according to each type of descriptor. 
 2. These partitions are intersected. This generates a new partition.
 3. The centroid of each cluster of this partition is calculated. 
