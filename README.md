@@ -19,7 +19,7 @@ where:
 * _comparisonFilename_ is the reference file where the clustering for comparison is. It must be in the directory _directory_, i.e., the route of the file containing the reference clustering will be _directory_/_comparisonFilename_.
 * _integrateClusters_ is a boolean (true or false) that indicates if clusters are integrated. If false, steps from 3 to 5 will not be executed.
 * _numberOfClusters_ is an integer that indicates the number of clusters. If 0, it is estimated using the [gap statistic](http://doi.wiley.com/10.1111/1467-9868.00293 "Gap statistic").
-* _isIncidenceMatrix_ is a boolean (true or false) that indicates if the file _comparisonFilename_ is an incidence matrix. If it is set to false, then this file is a CSV file consisting of a set of pairs __element__,__cluster__.
+* _isIncidenceMatrix_ is a boolean (true or false) that indicates if the file _comparisonFilename_ is an incidence matrix. If it is set to false, then this file is a CSV file without a header consisting of a set of pairs __element__,__cluster__.
 
 An example of a call is:
 
