@@ -16,7 +16,7 @@ where:
 
 * _directory_ is the directory containing the files for each feature separarely. These files must be in [Weka](http://www.cs.waikato.ac.nz/ml/weka/ "Weka") format.
 * _integrateClusters_ is a boolean (true or false) that indicates if clusters are integrated. If false, steps from 3 to 5 will not be executed.
-* _numberOfClusters_ is an integer that indicates the number of clusters. If 0, it is estimated using the [gap statistic](http://doi.wiley.com/10.1111/1467-9868.00293 "gap statistic").
+* _numberOfClusters_ is an integer that indicates the number of clusters. If 0, it is estimated using the [gap statistic](http://doi.wiley.com/10.1111/1467-9868.00293 "Gap statistic").
 
 An example of a call is:
 
