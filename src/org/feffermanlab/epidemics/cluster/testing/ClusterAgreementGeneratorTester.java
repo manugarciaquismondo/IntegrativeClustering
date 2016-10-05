@@ -18,6 +18,7 @@ public class ClusterAgreementGeneratorTester {
 	@Before
 	public void setUp() throws Exception {
 		clusterAgreementGenerator= new ClusterAgreementGenerator();
+		clusterAgreementGenerator.setAgreementMatrixFilename("Environments-Epidemics-Ecology-Gene.csv");
 		directoryProvider = new TestDirectoryProvider();
 		bootstrapClusteringFile=directoryProvider.getExamplesDirectory()+"/SameClusterBootstrap.csv";
 		matrixAuxiliaryClass = new MatrixAuxiliaryClass();

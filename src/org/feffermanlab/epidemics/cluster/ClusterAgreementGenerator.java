@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
  */
 public class ClusterAgreementGenerator {
 	
-	private static final String AGREEMENT_MATRIX_FILENAME = "Environments-Epidemics-Ecology-Gene.csv";
+	private String agreementMatrixFilename;
 	public static final int SAME_CLUSTER_FOR_BOTH_CLUSTERINGS=2,
 			DIFFERENT_CLUSTER_FOR_BOTH_CLUSTERINGS=1,
 			SAME_CLUSTER_FOR_BOOTSTRAP=0,
@@ -29,6 +29,14 @@ public class ClusterAgreementGenerator {
 		super();
 		matrixCSVIO = new MatrixCSVIO();
 		// TODO Auto-generated constructor stub
+	}
+	
+	/**
+	 * Set the file route where the agreement matrix will be stored
+	 * @param agreementMatrixFilename The file route where the agreement matrix will be stored
+	 */
+	public void setAgreementMatrixFilename(String agreementMatrixFilename){
+		this.agreementMatrixFilename = agreementMatrixFilename;
 	}
 
 	/**
@@ -44,9 +52,9 @@ public class ClusterAgreementGenerator {
 			String subdirectoryPath=subdirectory.getAbsolutePath();
 
 			int[][] sameClusterMatrix = createAgreementMatrix(
-					bootstrapSameClusterMatrix, subdirectoryPath, AGREEMENT_MATRIX_FILENAME);
+					bootstrapSameClusterMatrix, subdirectoryPath, agreementMatrixFilename);
 			checkAgreementDirectoryAndWriteAgreementMatrix(subdirectoryPath,
-					sameClusterMatrix, AGREEMENT_MATRIX_FILENAME);
+					sameClusterMatrix, agreementMatrixFilename);
 
 		}
 	}
@@ -56,9 +64,10 @@ public class ClusterAgreementGenerator {
 	 * @param belongingMatrixDirectory Directory where the belonging matrix is
 	 * @param bootstrapSameClusterFile Route to the bootstrap clustering file
 	 * @param belongingMatrixFilename File name of the belonging matrix for the tested clustering
+	 * @param bootstrapIsIncidenceMatrix True if the agreement matrix is an incidence matrix, false if it is a standard clustering file
 	 */
-	public void generateAgreementMatrix(String belongingMatrixDirectory, String bootstrapSameClusterFile, String belongingMatrixFilename){
-		generateAgreementMatrix(belongingMatrixDirectory, bootstrapSameClusterFile, belongingMatrixFilename, AGREEMENT_MATRIX_FILENAME);
+	public void generateAgreementMatrix(String belongingMatrixDirectory, String bootstrapSameClusterFile, String belongingMatrixFilename, boolean bootstrapIsIncidenceMatrix){
+		generateAgreementMatrix(belongingMatrixDirectory, bootstrapSameClusterFile, belongingMatrixFilename, agreementMatrixFilename, bootstrapIsIncidenceMatrix);
 	}
 	
 	/**
@@ -66,14 +75,46 @@ public class ClusterAgreementGenerator {
 	 * @param belongingMatrixDirectory Directory where the belonging matrix is
 	 * @param bootstrapSameClusterFile Route to the bootstrap clustering file
 	 * @param belongingMatrixFilename File name of the belonging matrix for the tested clustering
+	 * @param bootstrapIsIncidenceMatrix True if the agreement matrix is an incidence matrix, false if it is a standard clustering file
 	 */
-	public void generateAgreementMatrix(String belongingMatrixDirectory, String bootstrapSameClusterFile, String belongingMatrixFilename, String agreementMatrixInputFilename){
-		int[][] bootstrapSameClusterMatrix=readMatrixFromCSV(bootstrapSameClusterFile);
+	public void generateAgreementMatrix(String belongingMatrixDirectory, String bootstrapSameClusterFile, String belongingMatrixFilename, String agreementMatrixInputFilename, boolean bootstrapIsIncidenceMatrix){
+		int[][] bootstrapSameClusterMatrix=null;
+		if(bootstrapIsIncidenceMatrix){
+			bootstrapSameClusterMatrix = readMatrixFromCSV(bootstrapSameClusterFile);
+		} else{
+			bootstrapSameClusterMatrix = buildIncidenceMatrixFromClustering(bootstrapSameClusterFile);
+		}
 		int[][] sameClusterMatrix = createAgreementMatrix(
 				bootstrapSameClusterMatrix, belongingMatrixDirectory, belongingMatrixFilename);
 		checkAgreementDirectoryAndWriteAgreementMatrix(belongingMatrixDirectory,
 				sameClusterMatrix, agreementMatrixInputFilename);
 	}
+
+	/**
+	 * Build the incidence matrix from a clustering file 
+	 * @param inputFileRoute Route to the clustering file
+	 * @return Incidence matrix from the clustering
+	 */
+	public int[][] buildIncidenceMatrixFromClustering(String inputFileRoute) {
+			// TODO Auto-generated method stub
+			try {
+				String[][] clusteringFromFile = matrixCSVIO.readStringMatrixFromCSV(inputFileRoute);
+				int[][] agreementMatrix = new int[clusteringFromFile.length][clusteringFromFile.length];
+				for (int i = 0; i < agreementMatrix.length-1; i++) {
+					agreementMatrix[i][i]=1;
+					for (int j = i+1; j < agreementMatrix.length; j++) {
+						agreementMatrix[i][j]=agreementMatrix[j][i] = clusteringFromFile[i][1].equals(clusteringFromFile[j][1])?1:0;
+					}
+				}
+				agreementMatrix[agreementMatrix.length-1][agreementMatrix.length-1]=1;
+				return agreementMatrix;
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				System.err.println("Unable to read "+inputFileRoute);
+			}
+			return null;
+		}
+	
 
 	protected List<File> collectSubdirectories(String replicatesRoute) {
 		return Arrays.asList(new File(replicatesRoute).listFiles()).stream().filter(f->f.isDirectory()).collect(Collectors.toList());
@@ -168,7 +209,7 @@ public class ClusterAgreementGenerator {
 	}
 
 	protected double[][] addMatrixDirectoryToAgreementMatrix(File subdirectory) {
-		int[][] agreementMatrix= readMatrixFromCSV(subdirectory.getAbsolutePath()+AGREEMENT_MATRIX_DIRECTORY+AGREEMENT_MATRIX_FILENAME);
+		int[][] agreementMatrix= readMatrixFromCSV(subdirectory.getAbsolutePath()+AGREEMENT_MATRIX_DIRECTORY+agreementMatrixFilename);
 		if(averageAgreementMatrix==null){
 			averageAgreementMatrix= new double[agreementMatrix.length][agreementMatrix.length];
 			updateAgreementValue(agreementMatrix, false);

@@ -220,4 +220,34 @@ public class MatrixCSVIO {
 		}
 		return null;
 	}
+
+	public String[][] readStringMatrixFromCSV(String inputRoute) throws IOException {
+		// TODO Auto-generated method stub
+		try {
+			CSVReader reader = new CSVReader(new FileReader(inputRoute));
+			String[][] readMatrix=transformToStringMatrix(reader.readAll());
+			reader.close();
+			return readMatrix;
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			throw new IOException("File not found exception: "+e.getMessage());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			throw new IOException("Generic IO exception: "+e.getMessage());
+		}
+	}
+
+	private String[][] transformToStringMatrix(List<String[]> readAll) {
+		// TODO Auto-generated method stub
+		String[][] transformedMatrix = new String[readAll.size()][readAll.get(0).length];
+		int i=0;
+		for(String[] readLine: readAll){
+			for (int j = 0; j < readLine.length; j++) {
+				transformedMatrix[i][j]=readLine[j];
+			}
+			i++;
+		}
+		return transformedMatrix;
+		
+	}
 }

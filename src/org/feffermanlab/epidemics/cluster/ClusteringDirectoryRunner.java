@@ -26,10 +26,11 @@ public class ClusteringDirectoryRunner {
 	 * Initialize variables to cluster the directory
 	 * @param featureDirectoryName Directory for the feature clusterings
 	 */
-	public void setUpDirectoryClustering(String featureDirectoryName){
+	public void setUpDirectoryClustering(String featureDirectoryName, String agreementFileRoute){
 		clusterIntersector = new ClusterIntersector();
 		clusterApplier= new ClusterApplier();
 		clusterAgreementGenerator= new ClusterAgreementGenerator();
+		clusterAgreementGenerator.setAgreementMatrixFilename(agreementFileRoute);
 		matrixAverager= new MatrixAuxiliaryClass();
 		matrixIO = new MatrixCSVIO();
 		integrateClusters=false;
@@ -40,14 +41,16 @@ public class ClusteringDirectoryRunner {
 	/**
 	 * Apply the clustering pipeline in a directory
 	 * @param baseDirectory The directory route where to apply clustering 
+	 * @param comparisonFilename The filename of the clustering for comparison
+	 * @param bootstrapIsIncidenceMatrix True if the bootstrap matrix is an incidence matrix
 	 * @return A pair containing the degree of agreement and number of clusters in the clustering
 	 * @throws Exception If errors occur during I/O or clustering
 	 */
-	public Pair<Double, Integer> applyClusteringOnDirectory(String baseDirectory) throws Exception {
+	public Pair<Double, Integer> applyClusteringOnDirectory(String baseDirectory, String comparisonFilename, boolean bootstrapIsIncidenceMatrix) throws Exception {
 		String predirectory="";
 		applyClusteringAndWriteIncidenceMatrices(predirectory+baseDirectory+"/"+featureDirectoryName);
 		int numberOfClusters = checkIntegrationAndWriteClustering(baseDirectory, "clustering");			
-		double agreement=getAgreementBetweenClusterings(predirectory+baseDirectory+"/"+featureDirectoryName, predirectory+baseDirectory+"/ClusteringForComparison.csv");
+		double agreement=getAgreementBetweenClusterings(predirectory+baseDirectory+"/"+featureDirectoryName, predirectory+baseDirectory+"/"+comparisonFilename, bootstrapIsIncidenceMatrix);
 		System.out.println("The degree of agreement is "+agreement+" with "+numberOfClusters+" clusters");
 		return new Pair<Double, Integer>(agreement, numberOfClusters);
 	}
@@ -97,28 +100,21 @@ public class ClusteringDirectoryRunner {
 		clusteringFramework.writeClustering(clusteringFileRoute);
 		return clusteringFramework.getNumberOfClusters();
 	}
-	
-	/**
-	 * Get the degree of agreements between clusterings
-	 * @param geneDirectoryRoute The route of the reference clustering
-	 * @return The degree of agreements between clusterings
-	 * @throws Exception If errors occur during I/O
-	 */
-	public double getAgreementBetweenClusterings(String geneDirectoryRoute) throws Exception {
-		return getAgreementBetweenClusterings(geneDirectoryRoute, "./geneclustering/ClusteringForComparison.csv");
-	}
+
 	
 	/**
 	 * Calculate the degree of agreement between clusterings
 	 * @param geneDirectoryRoute Route of the generated clustering
-	 * @param comparisonRoute Route of the baseline clustering
+	 * @param comparisonFileRoute Route of the baseline clustering
+	 * @param bootstrapIsIncidence True if the bootstrap clustering is an incidence matrix
 	 * @return The percentage of agreement between clusterings
 	 * @throws Exception If errors occur during I/O or clustering
 	 */
-	public double getAgreementBetweenClusterings(String geneDirectoryRoute, String comparisonRoute) throws Exception {
+	public double getAgreementBetweenClusterings(String geneDirectoryRoute, String comparisonFileRoute, boolean bootstrapIsIncidence) throws Exception {
+		String agreementFilename = "agreementMatrix.csv";
 		applyClusteringAndWriteIncidenceMatrices(geneDirectoryRoute);
-		clusterAgreementGenerator.generateAgreementMatrix(geneDirectoryRoute, comparisonRoute, "incidencematrix.csv", "geneAgreementMatrix.csv");
-		double binarizedMatrix[][] = matrixAverager.binarizeMatrixAndCalculateFailureRates(matrixIO.readDoubleMatrixFromCSV(geneDirectoryRoute+"/agreementmatrices/geneAgreementMatrix.csv"));
+		clusterAgreementGenerator.generateAgreementMatrix(geneDirectoryRoute, comparisonFileRoute, "incidencematrix.csv", agreementFilename, bootstrapIsIncidence);
+		double binarizedMatrix[][] = matrixAverager.binarizeMatrixAndCalculateFailureRates(matrixIO.readDoubleMatrixFromCSV(geneDirectoryRoute+"/agreementmatrices/"+agreementFilename));
 		double agreementBetweenClusterings=matrixAverager.averageMatrix(binarizedMatrix);
 		return agreementBetweenClusterings;
 	}

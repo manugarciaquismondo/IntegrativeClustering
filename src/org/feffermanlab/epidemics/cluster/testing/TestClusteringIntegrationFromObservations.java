@@ -53,7 +53,7 @@ public class TestClusteringIntegrationFromObservations {
 			}};
         clusterReader= new ClusterReader();
         directoryRunner = new ClusteringDirectoryRunner();
-        directoryRunner.setUpDirectoryClustering("./relevantgenes");
+        directoryRunner.setUpDirectoryClustering("./relevantgenes", "agreementMatrix.csv");
 	}
 	
 
@@ -97,7 +97,7 @@ public class TestClusteringIntegrationFromObservations {
 
 	private double getAgreementBetweenClusters(String geneDirectoryRoute, String string) throws Exception {
 		// TODO Auto-generated method stub
-		return directoryRunner.getAgreementBetweenClusterings(geneDirectoryRoute, string);
+		return directoryRunner.getAgreementBetweenClusterings(geneDirectoryRoute, string, true);
 	}
 
 
@@ -162,7 +162,7 @@ public class TestClusteringIntegrationFromObservations {
 
 
 	private void applyClusteringOnDirectory(String string) throws Exception {
-		directoryRunner.applyClusteringOnDirectory("./"+string);
+		applyClusteringOnDirectoryWithComparison("./"+string);
 		
 	}
 
@@ -196,13 +196,17 @@ public class TestClusteringIntegrationFromObservations {
 		double[][] glassScores=new double[glassDirectories.length][2];
 		int scoreIndex=0;
 		for(File directory : glassDirectories){
-			Pair<Double, Integer> clusteringApplication =directoryRunner.applyClusteringOnDirectory(glassRepetitionsRoute+"/"+directory.getName());
+			Pair<Double, Integer> clusteringApplication =applyClusteringOnDirectoryWithComparison(glassRepetitionsRoute+"/"+directory.getName());
 			glassScores[scoreIndex][0]=clusteringApplication.getFirst();
 			glassScores[scoreIndex][1]=clusteringApplication.getSecond();
 			scoreIndex++;
 			System.out.println("Finished iteration "+scoreIndex);
 		}
 		directoryRunner.writeDoubleMatrix("./largesamples/glass/scores/scores.csv", glassScores);
+	}
+	
+	private Pair<Double,Integer> applyClusteringOnDirectoryWithComparison(String baseDirectory) throws Exception{
+		return directoryRunner.applyClusteringOnDirectory(baseDirectory, "ClusteringForComparison.csv", true);
 	}
 	
 	@Test
