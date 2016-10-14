@@ -1,1 +1,1 @@
-watch qstat -u quismondom
+watch qstat -u $(whoami)
