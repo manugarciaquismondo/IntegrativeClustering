@@ -1,0 +1,1 @@
+rm ~/machine-learning/data/messages/errors/* ~/machine-learning/data/messages/output/*

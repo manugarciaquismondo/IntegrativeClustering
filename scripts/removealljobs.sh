@@ -1,0 +1,1 @@
+qdel $(qstat -u quismondom | cut -f 1 -d ' ')

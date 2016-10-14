@@ -1,0 +1,1 @@
+watch qstat -u quismondom
