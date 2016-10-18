@@ -30,4 +30,4 @@ DATASET=$1
 CLUSTERS=$2
 MEMORY=2G
 echo "Working with dataset "${DATASET}" and "${CLUSTERS}" clusters in directory "${HOME}
-java -Xms${MEMORY} -Xmx${MEMORY} -jar ${HOME}/machine-learning/software/IntegrativeClustering.jar ${HOME}/machine-learning/data/arff/${DATASET} ${DATASET}.csv true ${CLUSTERS} false &> ${HOME}/machine-learning/results/${DATASET}.txt 
+java -Xms${MEMORY} -Xmx${MEMORY} -jar ${HOME}/machine-learning/software/IntegrativeClustering.jar ${HOME}/machine-learning/data/arff/${DATASET} -c=${DATASET}.csv -r=${CLUSTERS} &> ${HOME}/machine-learning/results/${DATASET}.txt 
