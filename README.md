@@ -11,7 +11,7 @@ Integrative Clustering is an algorithm for data integration of partial clusterin
 
 To run Integrative Clustering, type the command:
 
->java -jar IntegrativeClustering.jar _directory_ _comparisonFilename_ _integrateClusters_ _numberOfClusters_ _isIncidenceMatrix_
+>java -jar IntegrativeClustering.jar _directory_ _comparisonFilename_
 
 where:
 
