@@ -19,7 +19,7 @@ where:
 
 Optional parameters:
 
-* -c=_fileName_ compares the resulting clustering with the ground-truth clustering from _fileName_. If this parameter is not set, then the comparison is assumed to be 1 (perfect match).
+* -c=_fileName_ compares the resulting clustering with the ground-truth clustering from _fileName_. If this parameter is not set, then the comparison score is assumed to be 1 (perfect match).
 * -i indicates that the file containing the ground-truth clustering is an incidence matrix. It has only effect if -c=_fileName_ is set.
 * -r=_clusters_ integrates the clusterings accross features. The final number of clusters is set to _clusters_. If _clusters_ is set to 0, then this number is estimated using the [gap statistic](http://doi.wiley.com/10.1111/1467-9868.00293 "Gap statistic").
 
