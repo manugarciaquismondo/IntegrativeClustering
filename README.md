@@ -20,7 +20,7 @@ where:
 Optional parameters:
 
 * -c=_fileName_ compares the resulting clustering with the ground-truth clustering from _fileName_. If this parameter is not set, then the comparison score is assumed to be 1 (perfect match).
-* -i indicates that the file containing the ground-truth clustering is an incidence matrix. It has only effect if -c=_fileName_ is set.
+* -i indicates that the file containing the ground-truth clustering is an incidence matrix. It has only effect if -c=_fileName_ is set. If -i is not present, the file in _fileName_ contains a clustering as a comma-separated file (CSV) without header. Each row in this file is a pair _instance_,_cluster_, indicating that the instance _instance_ belongs to the cluster _cluster_.
 * -r=_clusters_ integrates the clusterings accross features. The final number of clusters is set to _clusters_. If _clusters_ is set to 0, then this number is estimated using the [gap statistic](http://doi.wiley.com/10.1111/1467-9868.00293 "Gap statistic").
 
 
