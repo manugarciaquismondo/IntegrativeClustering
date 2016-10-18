@@ -1,1 +1,1 @@
-qdel $(qstat -u $(whoami) | cut -f 1 -d ' ')
+qdel -u $(whoami)
