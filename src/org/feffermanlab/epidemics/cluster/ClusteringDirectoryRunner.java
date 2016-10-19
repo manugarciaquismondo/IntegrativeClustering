@@ -41,17 +41,21 @@ public class ClusteringDirectoryRunner {
 	/**
 	 * Apply the clustering pipeline in a directory
 	 * @param baseDirectory The directory route where to apply clustering 
+	 * @param compareClustering True if the comparison with an ground-truth clustering is performed
 	 * @param comparisonFilename The filename of the clustering for comparison
 	 * @param bootstrapIsIncidenceMatrix True if the bootstrap matrix is an incidence matrix
 	 * @return A pair containing the degree of agreement and number of clusters in the clustering
 	 * @throws Exception If errors occur during I/O or clustering
 	 */
-	public Pair<Double, Integer> applyClusteringOnDirectory(String baseDirectory, String comparisonFilename, boolean bootstrapIsIncidenceMatrix) throws Exception {
+	public Pair<Double, Integer> applyClusteringOnDirectory(String baseDirectory, boolean compareClustering, String comparisonFilename, boolean bootstrapIsIncidenceMatrix) throws Exception {
 		String predirectory="";
 		applyClusteringAndWriteIncidenceMatrices(predirectory+baseDirectory+"/"+featureDirectoryName);
-		int numberOfClusters = checkIntegrationAndWriteClustering(baseDirectory, "clustering");			
-		double agreement=getAgreementBetweenClusterings(predirectory+baseDirectory+"/"+featureDirectoryName, predirectory+baseDirectory+"/"+comparisonFilename, bootstrapIsIncidenceMatrix);
-		System.out.println("The degree of agreement is "+agreement+" with "+numberOfClusters+" clusters");
+		int numberOfClusters = checkIntegrationAndWriteClustering(baseDirectory, "clustering");		
+		double agreement=1.0f;
+		if(compareClustering){
+			agreement=getAgreementBetweenClusterings(predirectory+baseDirectory+"/"+featureDirectoryName, predirectory+baseDirectory+"/"+comparisonFilename, bootstrapIsIncidenceMatrix);
+			System.out.println("The degree of agreement is "+agreement+" with "+numberOfClusters+" clusters");
+		}
 		return new Pair<Double, Integer>(agreement, numberOfClusters);
 	}
 	

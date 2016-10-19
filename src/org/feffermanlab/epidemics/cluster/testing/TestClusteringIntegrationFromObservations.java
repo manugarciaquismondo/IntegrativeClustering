@@ -206,7 +206,7 @@ public class TestClusteringIntegrationFromObservations {
 	}
 	
 	private Pair<Double,Integer> applyClusteringOnDirectoryWithComparison(String baseDirectory) throws Exception{
-		return directoryRunner.applyClusteringOnDirectory(baseDirectory, "ClusteringForComparison.csv", true);
+		return directoryRunner.applyClusteringOnDirectory(baseDirectory, true, "ClusteringForComparison.csv", true);
 	}
 	
 	@Test
