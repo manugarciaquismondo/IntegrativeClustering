@@ -198,11 +198,29 @@ public class ClusterApplier {
 			 String latestFileCompleteRoute=listOfFiles[fileIndex].getAbsolutePath();
 			 latestFile=listOfFiles[fileIndex].getName();
 			 latestFile=latestFile.substring(0, latestFile.lastIndexOf('.'));
-			 double logLikelihood = testDifferentNumberOfClusters(latestFileCompleteRoute, fileIndex);
+			 double logLikelihood = 0.0f;
+			 if(latestFile.startsWith("c_")){
+				 logLikelihood = testDifferentNumberOfClusters(latestFileCompleteRoute, fileIndex);
+			 } else {
+				 logLikelihood = testDifferentNumberOfClusters(latestFileCompleteRoute, fileIndex, INIT_CLUSTERS, MAX_CLUSTERS);
+			 }
 			 registerBestClustering();
 			 System.out.println("\nThe best clustering for feature "+latestFile+" is:\n"+bestClusteringInfo+"\nwith evaluation "+logLikelihood);
 		 }
 	}
+
+
+
+	private double testDifferentNumberOfClusters(String latestFileCompleteRoute, int fileIndex) throws Exception {
+		// TODO Auto-generated method stub
+		DataSource source = new DataSource(latestFileCompleteRoute);
+		Instances structure = source.getDataSet();
+		int setNumberOfClusters=structure.numDistinctValues(0);
+		testAndInitializeNumberOfGenes(structure.numInstances());
+		return testDifferentNumberOfClusters(latestFileCompleteRoute, fileIndex, setNumberOfClusters, setNumberOfClusters);
+	}
+
+
 	protected void registerBestClustering() throws WekaException {
 		try {
 			bestClusterings.put(latestFile, bestClusteringInfo);
@@ -214,12 +232,12 @@ public class ClusterApplier {
 		
 		}
 	}
-	protected double testDifferentNumberOfClusters(String latestFileCompleteRoute, int fileIndex)
+	protected double testDifferentNumberOfClusters(String latestFileCompleteRoute, int fileIndex, int inputInitClusters, int inputMaxClusters)
 			throws Exception {
 		double bestLogLikelihood=Double.MAX_VALUE;
 		bestClusteringInfo=null;
 		createInstanceMapping(latestFileCompleteRoute, fileIndex);
-		for(int numberOfClusters=INIT_CLUSTERS; numberOfClusters<=MAX_CLUSTERS; numberOfClusters++){
+		for(int numberOfClusters=inputInitClusters; numberOfClusters<=inputMaxClusters; numberOfClusters++){
 			 bestLogLikelihood = updateKmeansAndTreatExceptions(latestFileCompleteRoute,
 					bestLogLikelihood, numberOfClusters);
 		 }
