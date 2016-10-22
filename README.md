@@ -30,3 +30,5 @@ An example of a call is:
 >java -jar IntegrativeClustering.jar /home/user/data -c=comparison.csv -r=3 -i
 
 This indicates that the comparison of the clustering resulting from integrating the features defined in the Weka file in the directory __/home/user/data/features__ are compared against the clustering defined in __comparison.csv__, that is an incidence matrix defining the reference clustering for the generated clustering. The clusters are integrated, and the number of clusters is set to 3.
+
+If folder __/home/user/data/features__ contains an _.arff_ file whose name starts with _c__ (such as c_dimension.arff) and this file contains 3 different values, the number of clusters for this feature is set to 3. Otherwise, it will be estimated using a cost function. 
